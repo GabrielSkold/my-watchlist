@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import MovieCard from "./Components/MovieCard/MovieCard";
 
@@ -49,6 +49,24 @@ const initialMovies = [
 
 function App() {
   const [movies, setMovies] = useState(initialMovies);
+  const [apiMovies, setApiMovies] = useState([]);
+
+  useEffect(() => {
+    const fetchPopularMovies = async () => {
+      const response = await fetch(
+        "https://api.themoviedb.org/3/movie/popular",
+        {
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_TMDB_TOKEN}`,
+          },
+        },
+      );
+      const data = await response.json();
+      setApiMovies(data.results);
+    };
+
+    fetchPopularMovies();
+  }, []);
 
   const handleToggleWatched = (id) => {
     const updatedMovies = movies.map((movie) => {
