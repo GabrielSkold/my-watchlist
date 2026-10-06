@@ -80,15 +80,33 @@ function App() {
     setMovies(remainingMovies);
   };
 
+  const handleAddMovie = (movie) => {
+    const alreadyExists = movies.some(
+      (existingMovie) => existingMovie.id === movie.id,
+    );
+    if (alreadyExists) {
+      return;
+    }
+    const newMovie = {
+      ...movie,
+      watched: false,
+    };
+    setMovies([...movies, newMovie]);
+  };
+
   return (
     <main>
-      <h1>My Watchlist</h1>
       <h2>Popular movies</h2>
       <ul>
         {apiMovies.map((movie) => (
-          <PopularMovieCard key={movie.id} movie={movie} />
+          <PopularMovieCard
+            key={movie.id}
+            movie={movie}
+            handleAddMovie={handleAddMovie}
+          />
         ))}
       </ul>
+      <h1>My Watchlist</h1>
       <input type="text" placeholder="Search for a movie..." />
       <button>Search</button>
       <ul>
