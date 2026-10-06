@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import MovieCard from "./Components/MovieCard/MovieCard";
+import getPopularMovies from "./api/tmdb";
+import PopularMovieCard from "./Components/PopularMovieCard/PopularMovieCard";
 
 const initialMovies = [
   {
@@ -53,16 +55,8 @@ function App() {
 
   useEffect(() => {
     const fetchPopularMovies = async () => {
-      const response = await fetch(
-        "https://api.themoviedb.org/3/movie/popular",
-        {
-          headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_TMDB_TOKEN}`,
-          },
-        },
-      );
-      const data = await response.json();
-      setApiMovies(data.results);
+      const popularMovies = await getPopularMovies();
+      setApiMovies(popularMovies);
     };
 
     fetchPopularMovies();
@@ -89,6 +83,12 @@ function App() {
   return (
     <main>
       <h1>My Watchlist</h1>
+      <h2>Popular movies</h2>
+      <ul>
+        {apiMovies.map((movie) => (
+          <PopularMovieCard key={movie.id} movie={movie} />
+        ))}
+      </ul>
       <input type="text" placeholder="Search for a movie..." />
       <button>Search</button>
       <ul>
