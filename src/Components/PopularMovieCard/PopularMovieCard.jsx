@@ -1,4 +1,4 @@
-const PopularMovieCard = ({ movie, handleAddMovie }) => {
+const PopularMovieCard = ({ movie, handleAddMovie, isInWatchlist }) => {
   return (
     <li>
       {movie.title}
@@ -8,7 +8,9 @@ const PopularMovieCard = ({ movie, handleAddMovie }) => {
         width={150}
       />
       <p>Rating: {movie.vote_average}</p>
-      <button onClick={() => handleAddMovie(movie)}>Add to watchList</button>
+      <button onClick={() => handleAddMovie(movie)} disabled={isInWatchlist}>
+        {isInWatchlist ? "In watchlist" : "Add to watchlist"}
+      </button>
     </li>
   );
 };

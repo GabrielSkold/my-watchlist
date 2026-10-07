@@ -80,10 +80,12 @@ function App() {
     setMovies(remainingMovies);
   };
 
+  const isMovieInWatchlist = (movieId) => {
+    return movies.some((existingMovie) => existingMovie.id === movieId);
+  };
+
   const handleAddMovie = (movie) => {
-    const alreadyExists = movies.some(
-      (existingMovie) => existingMovie.id === movie.id,
-    );
+    const alreadyExists = isMovieInWatchlist(movie.id);
     if (alreadyExists) {
       return;
     }
@@ -103,6 +105,7 @@ function App() {
             key={movie.id}
             movie={movie}
             handleAddMovie={handleAddMovie}
+            isInWatchlist={isMovieInWatchlist(movie.id)}
           />
         ))}
       </ul>
