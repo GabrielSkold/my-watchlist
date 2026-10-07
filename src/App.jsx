@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import MovieCard from "./Components/MovieCard/MovieCard";
+import getPopularMovies from "./api/tmdb";
+import PopularMovieCard from "./Components/PopularMovieCard/PopularMovieCard";
 
 const initialMovies = [
   {
@@ -49,6 +51,16 @@ const initialMovies = [
 
 function App() {
   const [movies, setMovies] = useState(initialMovies);
+  const [apiMovies, setApiMovies] = useState([]);
+
+  useEffect(() => {
+    const fetchPopularMovies = async () => {
+      const popularMovies = await getPopularMovies();
+      setApiMovies(popularMovies);
+    };
+
+    fetchPopularMovies();
+  }, []);
 
   const handleToggleWatched = (id) => {
     const updatedMovies = movies.map((movie) => {
@@ -68,8 +80,35 @@ function App() {
     setMovies(remainingMovies);
   };
 
+  const isMovieInWatchlist = (movieId) => {
+    return movies.some((existingMovie) => existingMovie.id === movieId);
+  };
+
+  const handleAddMovie = (movie) => {
+    const alreadyExists = isMovieInWatchlist(movie.id);
+    if (alreadyExists) {
+      return;
+    }
+    const newMovie = {
+      ...movie,
+      watched: false,
+    };
+    setMovies([...movies, newMovie]);
+  };
+
   return (
     <main>
+      <h2>Popular movies</h2>
+      <ul>
+        {apiMovies.map((movie) => (
+          <PopularMovieCard
+            key={movie.id}
+            movie={movie}
+            handleAddMovie={handleAddMovie}
+            isInWatchlist={isMovieInWatchlist(movie.id)}
+          />
+        ))}
+      </ul>
       <h1>My Watchlist</h1>
       <input type="text" placeholder="Search for a movie..." />
       <button>Search</button>
